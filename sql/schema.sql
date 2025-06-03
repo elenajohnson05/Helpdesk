@@ -42,15 +42,3 @@ CREATE TABLE Tickets
     FOREIGN KEY (Category_ID) REFERENCES Categories(Category_ID),
     FOREIGN KEY (Status_ID) REFERENCES Statuses(Status_ID)
 );
-CREATE TABLE TicketHistory (
-    [History_ID] [int] IDENTITY PRIMARY KEY,
-    [Ticket_ID] [int] NOT NULL,
-    [ChangedBy] [varchar](100),
-    [OldStatus_ID] [int],
-    [NewStatus_ID] [int],
-    [ChangeDate] [datetime] DEFAULT GETDATE(),
-    [Comments] [varchar](MAX),
-    FOREIGN KEY (Ticket_ID) REFERENCES Tickets(Ticket_ID),
-    FOREIGN KEY (OldStatus_ID) REFERENCES Statuses(Status_ID),
-    FOREIGN KEY (NewStatus_ID) REFERENCES Statuses(Status_ID)
-);

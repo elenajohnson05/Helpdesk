@@ -6,7 +6,7 @@ INSERT INTO Users (Name, Department, Email) VALUES
 ('Meriadoc Brandybuck', 'Battalion', 'brandybuck.merry@shire.com')
 
 INSERT INTO Categories (CategoryName) VALUES
-('Wizardry'),
+('Magic'),
 ('Nature'),
 ('Battle')
 
@@ -22,6 +22,6 @@ INSERT INTO Statuses (Status_ID, Status) VALUES
 (4, 'Closed')
 
 INSERT INTO Tickets (Ticket_ID, User_ID, Agent_ID, Category_ID, Status_ID, Subject, Description, Priority) VALUES
-(1, 1, 1, 1, 4, 'Ring Influence', 'I worry that my uncle''s ring may have strange effects on me', 'High'),
+(1, 1, 1, 1, 4, 'Ring Influence', 'I worry that my uncle''s magic ring may have strange effects on me', 'High'),
 (2, 2, 2, 2, 3, 'Shaping Hedges', 'I need help trimming my master''s hedges into the perfect shape', 'Medium'),
 (3, 3, 3, 3, 1, 'Fighting with Gondor', 'I require training to become a valiant warrior for the land of Gondor', 'High')

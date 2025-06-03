@@ -38,7 +38,7 @@ CREATE TABLE Tickets
 	[Description] [varchar](MAX),
 	[Priority] [varchar](20) CHECK (Priority IN ('Low', 'Medium', 'High')) DEFAULT 'Medium',
 	FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
-    FOREIGN KEY (Agent_ID) REFERENCES Agents(Agent_ID),
-    FOREIGN KEY (Category_ID) REFERENCES Categories(Category_ID),
-    FOREIGN KEY (Status_ID) REFERENCES Statuses(Status_ID)
+    	FOREIGN KEY (Agent_ID) REFERENCES Agents(Agent_ID),
+    	FOREIGN KEY (Category_ID) REFERENCES Categories(Category_ID),
+    	FOREIGN KEY (Status_ID) REFERENCES Statuses(Status_ID)
 );

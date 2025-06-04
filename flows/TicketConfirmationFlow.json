@@ -1,0 +1,54 @@
+//Trigger: When a Row is created in Dataverse
+{
+  "type": "OpenApiConnectionWebhook",
+  "inputs": {
+    "parameters": {
+      "subscriptionRequest/message": 1,
+      "subscriptionRequest/entityname": "cr132_tickets",
+      "subscriptionRequest/scope": 1
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+      "connection": "shared_commondataserviceforapps",
+      "operationId": "SubscribeWebhookTrigger"
+    }
+  }
+}
+
+//Action: Get a Dataverse Row by ID (retrieve row owner name and email)
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "entityName": "systemusers",
+      "recordId": "@triggerOutputs()?['body/_createdby_value']"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+      "connection": "shared_commondataserviceforapps",
+      "operationId": "GetItem"
+    }
+  },
+  "runAfter": {}
+}
+
+//Action: Send Email
+{
+  "type": "OpenApiConnection",
+  "inputs": {
+    "parameters": {
+      "emailMessage/To": "@outputs('Get_a_row_by_ID')?['body/internalemailaddress']",
+      "emailMessage/Body": "<p class=\"editor-paragraph\">Hello @{outputs('Get_a_row_by_ID')?['body/firstname']},</p><br><p class=\"editor-paragraph\">Your ticket regarding @{triggerOutputs()?['body/cr132_subject']} has been submitted to the helpdesk.</p>"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_gmail",
+      "connection": "shared_gmail",
+      "operationId": "SendEmailV2"
+    }
+  },
+  "runAfter": {
+    "Get_a_row_by_ID": [
+      "Succeeded"
+    ]
+  }
+}

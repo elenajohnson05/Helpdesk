@@ -1,0 +1,14 @@
+{
+    "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_INPROC_NET8_ENABLED": "1",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "DataverseClientId": "<your-client-id>",
+    "DataverseSecret": "<your-secret>",
+    "DataverseTenantId": "<your-tenant-id>",
+    "DataverseUrl": "<your-org-url>",
+    "OpenAiApiKey": "<your-api-key>",
+    "OpenAiEndpoint": "<your-endpoint>"
+  }
+}

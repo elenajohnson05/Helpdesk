@@ -1,0 +1,43 @@
+{
+  "type": "OpenApiConnectionWebhook",
+  "inputs": {
+    "parameters": {
+      "subscriptionRequest/message": 4,
+      "subscriptionRequest/entityname": "cr132_tickets",
+      "subscriptionRequest/scope": 4,
+      "subscriptionRequest/filteringattributes": "cr132_description"
+    },
+    "host": {
+      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+      "connection": "shared_commondataserviceforapps",
+      "operationId": "SubscribeWebhookTrigger"
+    }
+  },
+  "metadata": {
+    "operationMetadataId": "301cf294-461e-4c0d-badc-ee19d9796d1f"
+  }
+}
+
+{
+  "type": "Http",
+  "inputs": {
+    "uri": "<agent-assignment-function-uri>",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "TicketID": "@{triggerOutputs()?['body/cr132_ticketsid']}",
+      "Description": "@{triggerOutputs()?['body/cr132_description']}"
+    }
+  },
+  "runAfter": {},
+  "runtimeConfiguration": {
+    "contentTransfer": {
+      "transferMode": "Chunked"
+    }
+  },
+  "metadata": {
+    "operationMetadataId": "f8798402-0baf-4da7-bb74-e41067dbfaa6"
+  }
+}

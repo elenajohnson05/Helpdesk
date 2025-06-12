@@ -35,21 +35,21 @@ namespace AgentAssignmentFunction
             var data = JsonConvert.DeserializeObject<TicketRequest>(body);
 
             // Step 1: Get AI category prediction
-            string predictedCategory = await PredictCategory(data.Description, openAiEndpoint, openAiKey, log);
+            string predictedCategory = await PredictCategory(data.Description, openAiEndpoint, openAiKey);
 
             // Step 2: Authenticate to Dataverse
-            var accessToken = await GetDataverseAccessToken(clientId, clientSecret, tenantId, dataverseUrl, log);
+            var accessToken = await GetDataverseAccessToken(clientId, clientSecret, tenantId, dataverseUrl);
 
             // Step 3: Get Category ID from Dataverse
-            string categoryId = await GetCategoryId(dataverseUrl, accessToken, predictedCategory, log);
+            string categoryId = await GetCategoryId(dataverseUrl, accessToken, predictedCategory);
 
             // Step 4: Get Available Agent with that specialty
-            string agentId = await GetAvailableAgent(dataverseUrl, accessToken, categoryId, log);
+            string agentId = await GetAvailableAgent(dataverseUrl, accessToken, categoryId);
 
             if (agentId == null)
                 return new NotFoundObjectResult("No available agent.");
             // Step 5: Assign agent to ticket
-            await PatchTicket(dataverseUrl, accessToken, data.TicketID, agentId, log);
+            await PatchTicket(dataverseUrl, accessToken, data.TicketID, agentId, categoryId, log);
 
             return new OkObjectResult(new { AssignedAgentID = agentId, Category = predictedCategory });
 
@@ -63,7 +63,7 @@ namespace AgentAssignmentFunction
         }
 
         // Predict category using Azure OpenAI
-        private static async Task<string> PredictCategory(string description, string endpoint, string apiKey, ILogger log)
+        private static async Task<string> PredictCategory(string description, string endpoint, string apiKey)
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
@@ -90,7 +90,7 @@ namespace AgentAssignmentFunction
         }
 
         // Auth to Dataverse via Client Credential Flow
-        private static async Task<string> GetDataverseAccessToken(string clientId, string clientSecret, string tenantId, string dataverseUrl, ILogger log)
+        private static async Task<string> GetDataverseAccessToken(string clientId, string clientSecret, string tenantId, string dataverseUrl)
         {
             var tokenClient = new HttpClient();
             var dict = new Dictionary<string, string>
@@ -109,7 +109,7 @@ namespace AgentAssignmentFunction
             return JObject.Parse(tokenContent)["access_token"].ToString();
         }
 
-        private static async Task<string> GetCategoryId(string baseUrl, string token, string categoryName, ILogger log)
+        private static async Task<string> GetCategoryId(string baseUrl, string token, string categoryName)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -119,7 +119,7 @@ namespace AgentAssignmentFunction
             return json["value"]?.First?["cr132_categoryid"]?.ToString();
         }
 
-        private static async Task<string> GetAvailableAgent(string baseUrl, string token, string categoryId, ILogger log)
+        private static async Task<string> GetAvailableAgent(string baseUrl, string token, string categoryId)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -129,13 +129,14 @@ namespace AgentAssignmentFunction
             return json["value"]?.First?["cr132_agentid"]?.ToString();
         }
 
-        private static async Task PatchTicket(string baseUrl, string token, string ticketId, string agentId, ILogger log)
+        private static async Task PatchTicket(string baseUrl, string token, string ticketId, string agentId, string categoryID, ILogger log)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new Dictionary<string, object>
             {
-                { "cr132_Agent_ID@odata.bind", $"/cr132_agents({agentId})" }
+                { "cr132_Agent_ID@odata.bind", $"/cr132_agents({agentId})" },
+                { "cr132_Category_ID@odata.bind", $"/cr132_categories({categoryID})" }
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");

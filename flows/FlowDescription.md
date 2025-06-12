@@ -7,5 +7,5 @@ confirming that the Helpdesk has recieved their Ticket.
 # Agent Assignment Flow
 The flow is triggered upon creation of a new row or modification of the Description field
 in the Ticket table of dataverse.
-The HTTP action invokes our Agent Assignment Azure Function, dynamically assigning an Agent based on
+The HTTP action invokes our Agent Assignment Azure Function, dynamically assigning an Agent and filling the Category field based on
 the ticket description.

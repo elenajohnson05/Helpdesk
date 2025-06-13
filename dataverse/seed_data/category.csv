@@ -1,4 +1,4 @@
-CategoryName
-"Magic"
-"Nature"
-"Battle"
+Category_ID,CategoryName
+1,"Magic"
+2,"Nature"
+3,"Battle"
